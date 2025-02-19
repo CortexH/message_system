@@ -30,6 +30,7 @@ public class JwtService {
     }
 
     public String getJWTSubject(String token){
+        token = token.replace("bearer ", "");
         return JWT.require(algorithm)
                 .withIssuer(ISSUER)
                 .build()

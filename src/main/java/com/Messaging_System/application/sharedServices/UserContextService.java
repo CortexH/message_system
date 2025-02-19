@@ -20,4 +20,13 @@ public class UserContextService {
         return repository.findByEmail(jwtService.getJWTSubject(token));
     }
 
+    public UserModel findUserByToken(String token){
+        return repository.findByEmail(jwtService.getJWTSubject(token));
+    }
+
+    public Boolean validateUserToken(String token){
+        String email = jwtService.getJWTSubject(token);
+        return repository.existsByEmail(email);
+    }
+
 }

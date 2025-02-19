@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -33,4 +34,7 @@ public class MessageEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "message_state")
     private MessageState messageState;
+
+    @Column(name = "time_stamp")
+    private LocalDateTime timestamp;
 }

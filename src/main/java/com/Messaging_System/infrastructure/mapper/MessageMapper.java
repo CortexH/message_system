@@ -12,6 +12,7 @@ public class MessageMapper {
                 .receiver(UserMapper.toEntity(model.getReceiver()))
                 .sender(UserMapper.toEntity(model.getSender()))
                 .messageState(model.getMessageState())
+                .timestamp(model.getTimestamp())
                 .build();
     }
 
@@ -22,6 +23,7 @@ public class MessageMapper {
                 .receiver(UserMapper.toModel(entity.getReceiver()))
                 .sender(UserMapper.toModel(entity.getSender()))
                 .messageState(entity.getMessageState())
+                .timestamp(entity.getTimestamp())
                 .build();
     }
 

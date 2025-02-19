@@ -3,6 +3,7 @@ package com.Messaging_System.domain.model;
 import com.Messaging_System.domain.enums.MessageState;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -19,5 +20,7 @@ public class MessageModel {
 
     private String content;
     private MessageState messageState;
+
+    private LocalDateTime timestamp;
 
 }

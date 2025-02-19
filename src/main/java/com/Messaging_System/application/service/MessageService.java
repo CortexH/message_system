@@ -19,8 +19,13 @@ public class MessageService {
     private final UserContextService userContextService;
     private final UserFriendsValidationService friendsValidationService;
 
-    public void sendMessage(String message, UUID receiver_id, HttpServletRequest request){
-        UserModel user = userContextService.findUserByServletRequest(request);
+    public void sendMessage(
+            String message,
+            UUID receiver_id,
+            String token
+    ){
+
+        UserModel user = userContextService.findUserByToken(token);
         UserModel receiver = userService.findUserById(receiver_id);
 
         friendsValidationService.validateIfUserIsFriendOf(user, receiver);
