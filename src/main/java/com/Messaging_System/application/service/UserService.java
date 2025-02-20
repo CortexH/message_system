@@ -11,6 +11,7 @@ import com.Messaging_System.domain.service.user.BusinessRuleApplicationService;
 import com.Messaging_System.domain.service.user.UserAuthenticationService;
 import com.Messaging_System.domain.service.user.UserEncryptionService;
 import com.Messaging_System.domain.service.user.UserValidationService;
+import com.Messaging_System.infrastructure.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,6 +64,13 @@ public class UserService {
         return new GetRecommendationTagDTO(
                 businessService.findNonUsedNameTag(username)
         );
+    }
+
+    public UserModel findUserByFullUsername(String username){
+        String name = businessService.getUserNameFromFullName(username);
+        String tag = businessService.getUserTagFromFullName(username);
+
+        return repositoryPort.findByUsernameAndTag(name, tag);
     }
 
     // shared methods

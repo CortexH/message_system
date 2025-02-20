@@ -7,10 +7,7 @@ import com.Messaging_System.infrastructure.mapper.UserMapper;
 import com.Messaging_System.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryPort {
@@ -55,5 +52,12 @@ public class UserRepositoryImpl implements UserRepositoryPort {
     @Override
     public Boolean existByUsernameAndTag(String username, String tag) {
         return repository.existByUsernameAndTag(username, tag);
+    }
+
+    @Override
+    public UserModel findByUsernameAndTag(String username, String tag) {
+        UserEntity user = repository.findByUsernameAndTag(username, tag)
+                .orElseThrow(() -> new NoSuchElementException("There is no user with specified username"));
+        return UserMapper.toModel(user);
     }
 }

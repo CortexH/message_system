@@ -19,10 +19,14 @@ public class UserEntity {
     @Column(name = "user_id")
     private UUID uuid;
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "tag")
+    private String tag;
+
     private String password;
     private String email;
     private String userImage;
     private String userBio;
-    private String tag;
 }

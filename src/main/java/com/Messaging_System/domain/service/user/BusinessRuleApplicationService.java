@@ -43,5 +43,15 @@ public class BusinessRuleApplicationService {
         return recommendedTag;
     }
 
+    public String getUserTagFromFullName(String name){
+        int start = name.length() - 5;
+        return name.substring(start);
+    }
+
+    public String getUserNameFromFullName(String name){
+        int tagIndex = name.length() - 6;
+        return name.substring(0, tagIndex);
+
+    }
 
 }

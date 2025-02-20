@@ -22,12 +22,10 @@ public class MessageService {
     public void sendMessage(
             String message,
             UUID receiver_id,
-            String token
+            UserModel user
     ){
 
-        UserModel user = userContextService.findUserByToken(token);
         UserModel receiver = userService.findUserById(receiver_id);
-
         friendsValidationService.validateIfUserIsFriendOf(user, receiver);
 
 

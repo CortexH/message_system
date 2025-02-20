@@ -1,5 +1,6 @@
 package com.Messaging_System.infrastructure.entity;
 
+import com.Messaging_System.domain.enums.FriendRequestState;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +26,9 @@ public class UserFriendsEntity {
     @ManyToOne
     @JoinColumn(name = "friend_user_id")
     private UserEntity friend;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "friend_request_state")
+    private FriendRequestState state;
 
 }

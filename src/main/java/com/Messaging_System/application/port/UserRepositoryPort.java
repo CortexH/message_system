@@ -15,4 +15,5 @@ public interface UserRepositoryPort {
     UserModel findById(UUID id);
     List<String> findAllUsedTagsOfUsername(String username);
     Boolean existByUsernameAndTag(String username, String tag);
+    UserModel findByUsernameAndTag(String username, String tag);
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -27,6 +28,16 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
                     "AND u.tag = ':tag'"
     )
     Boolean existByUsernameAndTag(
+            @Param("name") String name,
+            @Param("tag") String tag
+    );
+
+    @Query(nativeQuery = true,
+            value = "SELECT u.* FROM users u " +
+                    "WHERE u.name = :name " +
+                    "AND u.tag = :tag"
+    )
+    Optional<UserEntity> findByUsernameAndTag(
             @Param("name") String name,
             @Param("tag") String tag
     );

@@ -22,4 +22,11 @@ public class UserFriendsValidationService {
         throw new CustomBadRequestException("You are not friend of specified user");
     }
 
+    public void validateIfAlreadyExistsFriendRequest(UserModel user, UserModel friend){
+        if(repository.returnTrueIfAlreadyHasAcceptedOrSentFriendRequest(user, friend)){
+            throw new CustomBadRequestException("There is already a friend request of specified user");
+        }
+    }
+
+
 }
