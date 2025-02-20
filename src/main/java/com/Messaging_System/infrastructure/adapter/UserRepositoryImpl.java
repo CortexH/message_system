@@ -7,6 +7,8 @@ import com.Messaging_System.infrastructure.mapper.UserMapper;
 import com.Messaging_System.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -43,5 +45,15 @@ public class UserRepositoryImpl implements UserRepositoryPort {
         UserEntity entity = repository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with specified ID not found"));
         return UserMapper.toModel(entity);
+    }
+
+    @Override
+    public List<String> findAllUsedTagsOfUsername(String username) {
+        return repository.findAllSimilarNamesTags(username);
+    }
+
+    @Override
+    public Boolean existByUsernameAndTag(String username, String tag) {
+        return repository.existByUsernameAndTag(username, tag);
     }
 }

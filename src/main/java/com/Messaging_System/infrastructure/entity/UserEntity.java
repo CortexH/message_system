@@ -24,4 +24,5 @@ public class UserEntity {
     private String email;
     private String userImage;
     private String userBio;
+    private String tag;
 }

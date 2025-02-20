@@ -20,6 +20,10 @@ public record UserRegisterDTO(
         @NotBlank(message = "'email' cannot be blank.")
         @NotNull(message = "'email' cannot be null.")
         @Email(message = "'email' need to be formated as email.")
-        String email
+        String email,
+
+        @NotBlank(message = "'tag' cannot be blank.")
+        @NotNull(message = "'tag' cannot be null.")
+        String tag
 ) {
 }

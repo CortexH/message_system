@@ -1,7 +1,7 @@
 package com.Messaging_System.adapter.exception;
 
-import com.Messaging_System.application.dto.output.DTO_ExGeneric;
-import com.Messaging_System.application.dto.output.DTO_ExUnauthorized;
+import com.Messaging_System.application.dto.output.exceptions.DTO_ExGeneric;
+import com.Messaging_System.application.dto.output.exceptions.DTO_ExUnauthorized;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -51,6 +51,16 @@ public class CustomGlobalExceptionHandler {
                 new DTO_ExGeneric(LocalDateTime.now(),
                         HttpStatus.NOT_FOUND.value(),
                         HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        ex.getMessage())
+        );
+    }
+
+    @ExceptionHandler(CustomInternalException.class)
+    public ResponseEntity<?> handleInternalException(CustomInternalException ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new DTO_ExGeneric(LocalDateTime.now(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                         ex.getMessage())
         );
     }

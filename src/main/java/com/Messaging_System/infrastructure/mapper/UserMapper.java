@@ -13,6 +13,7 @@ public class UserMapper {
                 .password(user.getPassword())
                 .userImage(user.getUserImage())
                 .uuid(user.getUuid())
+                .tag(user.getTag())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class UserMapper {
                 .password(user.getPassword())
                 .userImage(user.getUserImage())
                 .uuid(user.getUuid())
+                .tag(user.getTag())
                 .build();
     }
 

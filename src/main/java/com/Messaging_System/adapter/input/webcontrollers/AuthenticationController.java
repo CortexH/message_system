@@ -4,12 +4,10 @@ import com.Messaging_System.application.dto.input.UserLoginDTO;
 import com.Messaging_System.application.dto.input.UserRegisterDTO;
 import com.Messaging_System.application.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authentication")
@@ -30,6 +28,13 @@ public class AuthenticationController {
             @Valid @RequestBody UserLoginDTO data
             ){
         return ResponseEntity.ok(userService.loginAsUser(data));
+    }
+
+    @GetMapping("/tag-recommendation")
+    public ResponseEntity<?> getUsableTag(
+            @PathParam(value = "name") String name
+    ){
+        return ResponseEntity.ok(userService.getRecommendedUserTag(name));
     }
 
 }

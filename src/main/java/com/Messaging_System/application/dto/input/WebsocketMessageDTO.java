@@ -15,7 +15,7 @@ public class WebsocketMessageDTO {
     @JsonProperty("content")
     private String content;
 
-    @JsonProperty("receiverId")
+    @JsonProperty("receiver_id")
     private String receiverId;
 
 }

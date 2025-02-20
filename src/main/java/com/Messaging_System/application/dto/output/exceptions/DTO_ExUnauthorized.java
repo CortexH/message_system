@@ -1,4 +1,4 @@
-package com.Messaging_System.application.dto.output;
+package com.Messaging_System.application.dto.output.exceptions;
 
 import java.time.LocalDateTime;
 

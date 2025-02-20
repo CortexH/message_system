@@ -3,9 +3,11 @@ package com.Messaging_System.application.service;
 import com.Messaging_System.application.dto.input.UserLoginDTO;
 import com.Messaging_System.application.dto.input.UserRegisterDTO;
 import com.Messaging_System.application.dto.output.AuthenticatedDTO;
+import com.Messaging_System.application.dto.output.userDataDTO.GetRecommendationTagDTO;
 import com.Messaging_System.application.dto.output.userDataDTO.UserDataDTO;
 import com.Messaging_System.application.port.UserRepositoryPort;
 import com.Messaging_System.domain.model.UserModel;
+import com.Messaging_System.domain.service.user.BusinessRuleApplicationService;
 import com.Messaging_System.domain.service.user.UserAuthenticationService;
 import com.Messaging_System.domain.service.user.UserEncryptionService;
 import com.Messaging_System.domain.service.user.UserValidationService;
@@ -23,23 +25,27 @@ public class UserService {
     private final UserEncryptionService userEncryptionService;
     private final UserValidationService userValidationService;
     private final UserAuthenticationService userAuthenticationService;
+    private final BusinessRuleApplicationService businessService;
 
     public AuthenticatedDTO registerNewUser(UserRegisterDTO data){
-        UserModel userEntity = UserModel.builder()
+        UserModel user = UserModel.builder()
                 .name(data.name())
                 .email(data.email())
                 .password(data.password())
+                .tag(data.tag())
                 .build();
 
-        userValidationService.validateUserCreation(userEntity);
+        userValidationService.validateUserCreation(user);
+        userValidationService.validateUserName(user.getName());
+        userValidationService.validateUserTag(user.getName(), user.getTag());
 
-        userEntity = userEncryptionService.encryptUserCredentials(userEntity);
-        repositoryPort.save(userEntity);
+        user = userEncryptionService.encryptUserCredentials(user);
+        repositoryPort.save(user);
 
         return new AuthenticatedDTO(
                 LocalDateTime.now(),
                 200,
-                userAuthenticationService.authenticateUser(userEntity)
+                userAuthenticationService.authenticateUser(user)
         );
     }
 
@@ -53,6 +59,11 @@ public class UserService {
         );
     }
 
+    public GetRecommendationTagDTO getRecommendedUserTag(String username){
+        return new GetRecommendationTagDTO(
+                businessService.findNonUsedNameTag(username)
+        );
+    }
 
     // shared methods
     public UserModel findUserById(UUID uuid){

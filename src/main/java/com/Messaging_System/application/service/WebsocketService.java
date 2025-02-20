@@ -1,9 +1,9 @@
 package com.Messaging_System.application.service;
 
-import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
-import com.Messaging_System.application.dto.output.DTO_ExGeneric;
+import com.Messaging_System.adapter.exception.CustomBadRequestException;
+import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
+import com.Messaging_System.application.dto.output.exceptions.DTO_ExGeneric;
 import com.Messaging_System.domain.model.UserModel;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
@@ -37,16 +37,17 @@ public class WebsocketService {
             WebSocketMessage<?> message
     ) throws Exception {
         try{
-            //session.sendMessage(new TextMessage("skibidi dop dop dop dop"));
-            WebsocketMessageDTO receivedMessage = objectMapper.readValue(message.getPayload().toString(), WebsocketMessageDTO.class);
+            WebsocketRequestDTO receivedMessage = objectMapper.readValue(message.getPayload().toString(), WebsocketRequestDTO.class);
+
+            UUID target_User = UUID.fromString(receivedMessage.friendRequest().requestedUserName());
 
             messageService.sendMessage(
-                    receivedMessage.getContent(),
-                    UUID.fromString(receivedMessage.getReceiverId()),
+                    receivedMessage.message().getContent(),
+                    target_User,
                     session.getHandshakeHeaders().getFirst("authorization")
             );
 
-            sendUserMessage(userService.findUserById(UUID.fromString(receivedMessage.getReceiverId())));
+            answerUser(userService.findUserById(target_User));
 
 
 
@@ -59,11 +60,21 @@ public class WebsocketService {
                     e.getMessage()
             ));
             session.sendMessage(new TextMessage(json));
+
+        } catch (CustomBadRequestException e){
+            objectMapper.registerModule(new JavaTimeModule());
+            String json = objectMapper.writeValueAsString(new DTO_ExGeneric(
+                    LocalDateTime.now(),
+                    400,
+                    "Bad request",
+                    e.getMessage()
+            ));
+            session.sendMessage(new TextMessage(json));
         }
     }
 
     // lança uma mensagem ao usuário
-    public void sendUserMessage(UserModel user){
+    public void answerUser(UserModel user){
         WebSocketSession session = sessions.get(user.getUuid().toString());
 
         if(session == null){

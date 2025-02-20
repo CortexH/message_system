@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, UUID> {
 
     @Query(nativeQuery = true,
-            value = "SELECT uf.* FROM user_friends uf" +
+            value = "SELECT uf.* FROM user_friends uf " +
                     "WHERE uf.principal_user_id = :userId"
     )
     List<UserFriendsEntity> findUserFriends(@Param("userId") UUID userId);

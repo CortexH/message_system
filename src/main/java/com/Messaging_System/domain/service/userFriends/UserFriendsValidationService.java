@@ -4,12 +4,10 @@ import com.Messaging_System.adapter.exception.CustomBadRequestException;
 import com.Messaging_System.application.port.UserFriendsRepositoryPort;
 import com.Messaging_System.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
-@Service
+
 @RequiredArgsConstructor
 public class UserFriendsValidationService {
 
@@ -21,7 +19,7 @@ public class UserFriendsValidationService {
         for(UserModel model : allFriends){
             if(model.getUuid().equals(friend.getUuid())) return;
         }
-        throw new CustomBadRequestException("You are not friend of specified user!");
+        throw new CustomBadRequestException("You are not friend of specified user");
     }
 
 }
