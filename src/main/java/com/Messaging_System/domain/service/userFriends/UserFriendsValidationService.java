@@ -24,9 +24,12 @@ public class UserFriendsValidationService {
 
     public void validateIfAlreadyExistsFriendRequest(UserModel user, UserModel friend){
         if(repository.returnTrueIfAlreadyHasAcceptedOrSentFriendRequest(user, friend)){
-            throw new CustomBadRequestException("There is already a friend request of specified user");
+            throw new CustomBadRequestException("You already have a friend request of this user!");
         }
     }
 
+    public void validateIfTargetIsSameAsUser(UserModel user, UserModel friend){
+        if(user.getUuid().equals(friend.getUuid())) throw new CustomBadRequestException("You cannot friend yourself!");
+    }
 
 }

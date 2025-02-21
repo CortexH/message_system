@@ -3,6 +3,7 @@ package com.Messaging_System.application.service;
 import com.Messaging_System.application.dto.input.UserLoginDTO;
 import com.Messaging_System.application.dto.input.UserRegisterDTO;
 import com.Messaging_System.application.dto.output.AuthenticatedDTO;
+import com.Messaging_System.application.dto.output.userDataDTO.FormattedUserDTO;
 import com.Messaging_System.application.dto.output.userDataDTO.GetRecommendationTagDTO;
 import com.Messaging_System.application.dto.output.userDataDTO.UserDataDTO;
 import com.Messaging_System.application.port.UserRepositoryPort;
@@ -76,6 +77,15 @@ public class UserService {
     // shared methods
     public UserModel findUserById(UUID uuid){
         return repositoryPort.findById(uuid);
+    }
+
+    public FormattedUserDTO formatUserAsDTO(UserModel user){
+        return new FormattedUserDTO(
+                (user.getName() + "#" + user.getTag()),
+                user.getUuid().toString(),
+                user.getUserImage(),
+                user.getUserBio()
+        );
     }
 
 }

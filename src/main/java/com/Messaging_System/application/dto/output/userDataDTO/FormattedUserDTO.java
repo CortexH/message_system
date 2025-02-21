@@ -2,17 +2,17 @@ package com.Messaging_System.application.dto.output.userDataDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FormattedUserDTO {
+public record FormattedUserDTO(
+        @JsonProperty("userName")
+        String userName,
 
-    @JsonProperty("userName")
-    private String userName;
+        @JsonProperty("userId")
+        String userId,
 
-    @JsonProperty("userId")
-    private String userId;
+        @JsonProperty("userImage")
+        String userImage,
 
-    @JsonProperty("userImage")
-    private String userImage;
-
-    @JsonProperty("userBio")
-    private String bio;
+        @JsonProperty("userBio")
+        String bio
+) {
 }

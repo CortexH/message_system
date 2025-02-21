@@ -21,10 +21,13 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
             @Param("state") FriendRequestState state
             );
 
+    // PFV VALIDA ISSO AQ MAIS TARDE, FUNCIONOU MAS N SEI SE VAI FUNCIONAR TODA HORA >:(
     @Query(nativeQuery = true,
             value = "SELECT uf.* FROM user_friends uf " +
                     "WHERE uf.principal_user_id = :userId " +
                     "AND uf.friend_user_id = :friendId " +
+                    "OR (uf.friend_user_id = :userId " +
+                    "AND uf.principal_user_id = :friendId) " +
                     "AND uf.friend_request_state != 'DECLINED' "
     )
     List<UserFriendsEntity> alreadyRequestedByUserIdAndFriendId(

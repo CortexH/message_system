@@ -14,7 +14,7 @@ public class UserFriendsModel {
 
     private UUID user_friends_id;
 
-    private UserModel userEntity;
+    private UserModel user;
 
     private UserModel friend;
 

@@ -1,14 +1,14 @@
 package com.Messaging_System.adapter.input.websocket;
 
-import com.Messaging_System.application.service.WebsocketService;
+import com.Messaging_System.application.service.websocket.WebsocketService;
+import com.Messaging_System.application.service.websocket.WebsocketSessionService;
+import com.Messaging_System.domain.model.UserModel;
+import com.Messaging_System.infrastructure.cache.WebsocketSessionRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Slf4j
@@ -16,10 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebsocketHandler extends TextWebSocketHandler {
 
     private final WebsocketService websocketService;
+    private final WebsocketSessionService sessionService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        websocketService.newSession(session);
+        UserModel user = (UserModel) session.getAttributes().get("User");
+        sessionService.insertIntoSession(user.getUuid().toString(), session);
     }
 
     @Override

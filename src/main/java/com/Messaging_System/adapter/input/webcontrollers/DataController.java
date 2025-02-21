@@ -2,16 +2,20 @@ package com.Messaging_System.adapter.input.webcontrollers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
 @RequestMapping("/data")
+@RestController
+@RequiredArgsConstructor
 public class DataController {
 
-    @GetMapping("/user/get-data")
+    @GetMapping("/user/get-starter-data")
     public ResponseEntity<?> loadUserStarterData(
             HttpServletRequest request
     ){

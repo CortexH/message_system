@@ -1,15 +1,20 @@
-package com.Messaging_System.application.service;
+package com.Messaging_System.application.service.websocket;
 
 import com.Messaging_System.adapter.exception.CustomBadRequestException;
 import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
+import com.Messaging_System.application.dto.output.GenericSuccessfullDTO;
 import com.Messaging_System.application.dto.output.exceptions.DTO_ExGeneric;
+import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestNotify;
 import com.Messaging_System.application.event.sentEvent.User_ReturnFriendRequest;
+import com.Messaging_System.application.service.MessageService;
+import com.Messaging_System.application.service.UserFriendsService;
+import com.Messaging_System.application.service.UserService;
 import com.Messaging_System.domain.enums.FriendRequestType;
 import com.Messaging_System.domain.enums.WebsocketResponseType;
 import com.Messaging_System.domain.model.UserFriendsModel;
 import com.Messaging_System.domain.model.UserModel;
+import com.Messaging_System.infrastructure.cache.WebsocketSessionRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -17,26 +22,21 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class WebsocketService {
 
+    private final WebsocketSessionService sessionService;
     private final MessageService messageService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper;
     private final UserService userService;
     private final UserFriendsService friendsService;
     private final ApplicationEventPublisher eventPublisher;
-
-    public void newSession(WebSocketSession session){
-        UserModel user = (UserModel) session.getAttributes().get("User");
-        sessions.put(user.getUuid().toString(), session);
-    }
 
     // ao usuário mandar uma mensagem, recebe por aqui
     public void receiveUserMessage(
@@ -45,7 +45,6 @@ public class WebsocketService {
     ) throws Exception {
         try{
             WebsocketRequestDTO receivedMessage = objectMapper.readValue(message.getPayload().toString(), WebsocketRequestDTO.class);
-
             UserModel user = (UserModel) session.getAttributes().get("User");
 
             if(receivedMessage.type() == WebsocketResponseType.MESSAGE){
@@ -84,7 +83,6 @@ public class WebsocketService {
 
 
         } catch (NoSuchElementException e) {
-            objectMapper.registerModule(new JavaTimeModule());
             String json = objectMapper.writeValueAsString(new DTO_ExGeneric(
                     LocalDateTime.now(),
                     404,
@@ -94,7 +92,6 @@ public class WebsocketService {
             session.sendMessage(new TextMessage(json));
 
         } catch (CustomBadRequestException e){
-            objectMapper.registerModule(new JavaTimeModule());
             String json = objectMapper.writeValueAsString(new DTO_ExGeneric(
                     LocalDateTime.now(),
                     400,
@@ -105,19 +102,13 @@ public class WebsocketService {
         }
     }
 
-    public void sendUserRequestToTarget(UserFriendsModel friend){
-
-    }
-
     // lança uma mensagem ao usuário
     public void answerUser(UserModel user){
-        WebSocketSession session = sessions.get(user.getUuid().toString());
+        WebSocketSession session = sessionService.getSessionByUser(user);
 
         if(session == null){
-
             return;
         }
-
 
     }
 

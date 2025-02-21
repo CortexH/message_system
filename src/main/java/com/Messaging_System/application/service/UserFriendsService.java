@@ -17,9 +17,11 @@ public class UserFriendsService {
 
     public void sendFriendRequest(UserModel user, UserModel friend){
         validationService.validateIfAlreadyExistsFriendRequest(user, friend);
+        validationService.validateIfTargetIsSameAsUser(user, friend);
+
         UserFriendsModel request = UserFriendsModel.builder()
                 .state(FriendRequestState.PENDING)
-                .userEntity(user)
+                .user(user)
                 .friend(friend)
                 .build();
 
