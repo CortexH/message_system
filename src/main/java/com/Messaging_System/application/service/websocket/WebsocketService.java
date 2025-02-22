@@ -2,18 +2,14 @@ package com.Messaging_System.application.service.websocket;
 
 import com.Messaging_System.adapter.exception.CustomBadRequestException;
 import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
-import com.Messaging_System.application.dto.output.GenericSuccessfullDTO;
 import com.Messaging_System.application.dto.output.exceptions.DTO_ExGeneric;
-import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestNotify;
 import com.Messaging_System.application.event.sentEvent.User_ReturnFriendRequest;
 import com.Messaging_System.application.service.MessageService;
 import com.Messaging_System.application.service.UserFriendsService;
 import com.Messaging_System.application.service.UserService;
 import com.Messaging_System.domain.enums.FriendRequestType;
 import com.Messaging_System.domain.enums.WebsocketResponseType;
-import com.Messaging_System.domain.model.UserFriendsModel;
 import com.Messaging_System.domain.model.UserModel;
-import com.Messaging_System.infrastructure.cache.WebsocketSessionRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,10 +18,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +31,7 @@ public class WebsocketService {
     private final UserService userService;
     private final UserFriendsService friendsService;
     private final ApplicationEventPublisher eventPublisher;
+    private final WebsocketFriendRequestService friendRequestService;
 
     // ao usuário mandar uma mensagem, recebe por aqui
     public void receiveUserMessage(
@@ -47,40 +42,17 @@ public class WebsocketService {
             WebsocketRequestDTO receivedMessage = objectMapper.readValue(message.getPayload().toString(), WebsocketRequestDTO.class);
             UserModel user = (UserModel) session.getAttributes().get("User");
 
-            if(receivedMessage.type() == WebsocketResponseType.MESSAGE){
-                UUID target_User = UUID.fromString(receivedMessage.message().getReceiverId());
+            switch (receivedMessage.type()){
 
-                messageService.sendMessage(
-                        receivedMessage.message().getContent(),
-                        target_User,
-                        user
-                );
-                answerUser(userService.findUserById(target_User));
-            }
+                case MESSAGE -> messageService.sendMessage(user, session, receivedMessage);
 
-            if(receivedMessage.type() == WebsocketResponseType.FRIEND_REQUEST){
-                FriendRequestType requestType = receivedMessage.friendRequest().type();
-                String targetName = receivedMessage.friendRequest().requestedUserName();
-                UserModel targetUser = userService.findUserByFullUsername(targetName);
-
-                if(requestType == FriendRequestType.SEND){
-                    friendsService.sendFriendRequest(user, targetUser);
-
-                }else if(requestType == FriendRequestType.ACCEPT) {
-                    friendsService.acceptFriendRequest(user, targetUser);
-
-                }else if(requestType == FriendRequestType.DECLINE){
-                    friendsService.declineFriendRequest(user, targetUser);
-
-                }else{
-                    throw new CustomBadRequestException("Incorrect request type.");
+                case FRIEND_REQUEST -> {
+                    friendRequestService.handleFriendRequest(user, receivedMessage);
+                    UserModel targetUser = userService.findUserByFullUsername(receivedMessage.friendRequest().requestedUserName());
+                    eventPublisher.publishEvent(new User_ReturnFriendRequest(
+                            this, user, targetUser));
                 }
-
-                eventPublisher.publishEvent(new User_ReturnFriendRequest(
-                        this, user, targetUser));
-
             }
-
 
         } catch (NoSuchElementException e) {
             String json = objectMapper.writeValueAsString(new DTO_ExGeneric(

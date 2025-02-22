@@ -1,5 +1,7 @@
 package com.Messaging_System.application.service;
 
+import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
+import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
 import com.Messaging_System.application.port.MessageRepositoryPort;
 import com.Messaging_System.application.sharedServices.UserContextService;
 import com.Messaging_System.domain.model.UserModel;
@@ -7,6 +9,7 @@ import com.Messaging_System.domain.service.userFriends.UserFriendsValidationServ
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.UUID;
 
@@ -20,15 +23,9 @@ public class MessageService {
     private final UserFriendsValidationService friendsValidationService;
 
     public void sendMessage(
-            String message,
-            UUID receiver_id,
-            UserModel user
+            UserModel user, WebSocketSession session,
+            WebsocketRequestDTO receivedMessage
     ){
-
-        UserModel receiver = userService.findUserById(receiver_id);
-        friendsValidationService.validateIfUserIsFriendOf(user, receiver);
-
-
 
     }
 
