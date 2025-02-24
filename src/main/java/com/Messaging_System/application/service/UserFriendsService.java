@@ -52,8 +52,11 @@ public class UserFriendsService {
         repository.declineFriendRequest(sender, friend);
     }
 
-    public void removeFriend(UserModel friend, WebsocketFriendRequestDTO data){
-        UserModel sender = userService.findUserByFullUsername(data.senderUserName());
+    public void removeFriend(UserModel sender, WebsocketFriendRequestDTO data){
+        UserModel friend = userService.findUserByFullUsername(data.senderUserName());
+        if(!repository.validateIfUserIsFriendOrFriended(sender, friend)) throw new CustomBadRequestException("You are not friend of this user");
+        if(validationService.returnTrueIfTargetIsSameAsUser(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
+        if(validationService.validateIfUserIsFriendOf(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
 
 
 
@@ -66,5 +69,4 @@ public class UserFriendsService {
     public UserFriendsModel getUserFriendByUserAndFriend(UserModel user, UserModel friend){
         return repository.findByUserAndFriend(user, friend);
     }
-
 }

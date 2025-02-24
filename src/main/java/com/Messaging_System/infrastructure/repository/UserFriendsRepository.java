@@ -23,7 +23,6 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
             @Param("state") String state
             );
 
-    // PFV VALIDA ISSO AQ MAIS TARDE, FUNCIONOU MAS N SEI SE VAI FUNCIONAR TODA HORA >:(
     @Query(nativeQuery = true,
             value = "SELECT uf.* FROM user_friends uf " +
                     "WHERE (uf.principal_user_id = :userId " +

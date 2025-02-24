@@ -63,7 +63,7 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
 
     @Override
     public Boolean validateIfUserIsFriendOrFriended(UserModel user, UserModel friend) {
-        return null;
+        return repository.validateIfAnyOfTheSidesAreBefriended(user.getUuid(), friend.getUuid());
     }
 
     @Override
