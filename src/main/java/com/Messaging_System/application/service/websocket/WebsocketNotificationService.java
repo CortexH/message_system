@@ -1,8 +1,11 @@
 package com.Messaging_System.application.service.websocket;
 
+import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
 import com.Messaging_System.application.dto.output.GenericSuccessfullDTO;
 import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestNotify;
+import com.Messaging_System.application.dto.output.websocket.WebsocketMessageNotifyDTO;
 import com.Messaging_System.application.service.UserService;
+import com.Messaging_System.domain.enums.WebsocketResponseType;
 import com.Messaging_System.domain.model.UserFriendsModel;
 import com.Messaging_System.domain.model.UserModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +33,6 @@ public class WebsocketNotificationService {
         if(friendSession == null){
             return;
         }
-
         friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
                 new GenericSuccessfullDTO(
                         LocalDateTime.now().toString(),
@@ -58,6 +60,36 @@ public class WebsocketNotificationService {
 
     }
 
+    public void sendUserMessage(WebsocketMessageDTO message) throws IOException {
+        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+        WebSocketSession session = sessionService.getSessionByUser(target);
 
+        if(session == null){
+            return;
+        }
+
+        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                new WebsocketMessageNotifyDTO(
+                        WebsocketResponseType.MESSAGE,
+                        message.getContent(),
+                        target.getName() + "#" + target.getTag()
+                )
+        )));
+
+    }
+
+    public void deleteUserMessageNotification(WebsocketMessageDTO message){
+        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+        WebSocketSession session = sessionService.getSessionByUser(target);
+    }
+
+    public void readUserMessageNotification(WebsocketMessageDTO message){
+        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+        WebSocketSession session = sessionService.getSessionByUser(target);
+    }
+    public void markAsNotReadUserMessageNotification(WebsocketMessageDTO message){
+        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+        WebSocketSession session = sessionService.getSessionByUser(target);
+    }
 
 }

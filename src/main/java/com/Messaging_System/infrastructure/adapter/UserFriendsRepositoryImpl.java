@@ -29,13 +29,13 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
     }
 
     @Override
-    public void acceptFriendRequest(UserModel userEntity, UserModel friend) {
-
+    public void acceptFriendRequest(UserModel friend, UserModel user) {
+        repository.changeRequestState(user.getUuid(), friend.getUuid(), FriendRequestState.ACCEPTED.name());
     }
 
     @Override
     public void declineFriendRequest(UserModel user, UserModel friend) {
-
+        repository.deleteFromUserIdAndFriendId(user.getUuid(), friend.getUuid());
     }
 
     @Override
@@ -47,15 +47,28 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
 
     @Override
     public UserFriendsModel findByUserAndFriend(UserModel user, UserModel friend) {
-
         UserFriendsEntity entity = repository.alreadyRequestedByUserIdAndFriendId(user.getUuid(), friend.getUuid()).getFirst();
-
         return UserFriendsMapper.toModel(entity);
     }
 
     @Override
+    public Boolean validateIfFriendRequestIsPending(UserModel user, UserModel friend) {
+        return repository.validadeIfExistsByUserAndFriendAndState(user.getUuid(), friend.getUuid(), FriendRequestState.PENDING.name());
+    }
+
+    @Override
+    public Boolean validateIfUserCanSendFriendRequest(UserModel user, UserModel friend){
+        return repository.validateIfUserCanSendFriendRequestToTarget(user.getUuid(), friend.getUuid());
+    }
+
+    @Override
+    public Boolean validateIfUserIsFriendOrFriended(UserModel user, UserModel friend) {
+        return null;
+    }
+
+    @Override
     public List<UserModel> getUserFriends(UserModel user) {
-        List<UserFriendsEntity> userFriends = repository.findUserFriendsByUserIdAndRequestState(user.getUuid(), FriendRequestState.ACCEPTED);
+        List<UserFriendsEntity> userFriends = repository.findUserFriendsByUserIdAndRequestState(user.getUuid(), FriendRequestState.ACCEPTED.name());
 
         List<UserModel> models = new ArrayList<>();
         for(UserFriendsEntity uf : userFriends){
@@ -68,7 +81,7 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
 
     @Override
     public List<UserModel> getUserFriendsWithType(UserModel user, FriendRequestState state) {
-        List<UserFriendsEntity> userFriends = repository.findUserFriendsByUserIdAndRequestState(user.getUuid(), state);
+        List<UserFriendsEntity> userFriends = repository.findUserFriendsByUserIdAndRequestState(user.getUuid(), state.name());
 
         List<UserModel> models = new ArrayList<>();
         for(UserFriendsEntity uf : userFriends){
@@ -76,7 +89,6 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
 
             models.add(UserMapper.toModel(u));
         }
-
         return models;
     }
 }

@@ -1,5 +1,6 @@
 package com.Messaging_System.domain.model;
 
+import com.Messaging_System.domain.enums.UserRoles;
 import lombok.*;
 
 import java.util.UUID;
@@ -20,4 +21,5 @@ public class UserModel {
     private String userBio;
     private String tag;
 
+    private UserRoles role;
 }

@@ -17,16 +17,12 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(
-            @Valid @RequestBody UserRegisterDTO data
-    ){
+    public ResponseEntity<?> registerUser(@RequestBody @Valid UserRegisterDTO data){
         return ResponseEntity.ok(userService.registerNewUser(data));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginAsUser(
-            @Valid @RequestBody UserLoginDTO data
-            ){
+    public ResponseEntity<?> loginAsUser(@RequestBody @Valid UserLoginDTO data){
         return ResponseEntity.ok(userService.loginAsUser(data));
     }
 

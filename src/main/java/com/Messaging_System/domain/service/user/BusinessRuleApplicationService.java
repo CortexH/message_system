@@ -1,5 +1,6 @@
 package com.Messaging_System.domain.service.user;
 
+import com.Messaging_System.adapter.exception.CustomBadRequestException;
 import com.Messaging_System.adapter.exception.CustomInternalException;
 import com.Messaging_System.application.port.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,12 @@ public class BusinessRuleApplicationService {
     public String getUserNameFromFullName(String name){
         int tagIndex = name.length() - 6;
         return name.substring(0, tagIndex);
+    }
 
+    public void validateIfNameIsNotNull(String name){
+        if(name == null){
+            throw new CustomBadRequestException("name is null");
+        }
     }
 
 }

@@ -7,6 +7,7 @@ import com.Messaging_System.application.dto.output.userDataDTO.FormattedUserDTO;
 import com.Messaging_System.application.dto.output.userDataDTO.GetRecommendationTagDTO;
 import com.Messaging_System.application.dto.output.userDataDTO.UserDataDTO;
 import com.Messaging_System.application.port.UserRepositoryPort;
+import com.Messaging_System.domain.enums.UserRoles;
 import com.Messaging_System.domain.model.UserModel;
 import com.Messaging_System.domain.service.user.BusinessRuleApplicationService;
 import com.Messaging_System.domain.service.user.UserAuthenticationService;
@@ -68,6 +69,7 @@ public class UserService {
     }
 
     public UserModel findUserByFullUsername(String username){
+        businessService.validateIfNameIsNotNull(username);
         String name = businessService.getUserNameFromFullName(username);
         String tag = businessService.getUserTagFromFullName(username);
 

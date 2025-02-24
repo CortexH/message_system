@@ -1,13 +1,10 @@
-package com.Messaging_System.infrastructure.config;
+package com.Messaging_System.infrastructure.beans;
 
 import com.Messaging_System.application.port.UserFriendsRepositoryPort;
 import com.Messaging_System.application.port.UserRepositoryPort;
 import com.Messaging_System.application.service.MessageService;
-import com.Messaging_System.application.service.UserFriendsService;
 import com.Messaging_System.application.service.UserService;
-import com.Messaging_System.application.service.websocket.WebsocketNotificationService;
-import com.Messaging_System.application.service.websocket.WebsocketService;
-import com.Messaging_System.application.service.websocket.WebsocketSessionService;
+import com.Messaging_System.application.service.websocket.*;
 import com.Messaging_System.domain.service.user.BusinessRuleApplicationService;
 import com.Messaging_System.domain.service.user.UserAuthenticationService;
 import com.Messaging_System.domain.service.user.UserEncryptionService;
@@ -47,35 +44,6 @@ public class GeneralBeansConfigurations {
     @Bean
     public BusinessRuleApplicationService businessRuleApplicationService(UserRepositoryPort repositoryPort){
         return new BusinessRuleApplicationService(repositoryPort);
-    }
-
-    @Bean
-    public WebsocketService websocketService(
-            MessageService messageService,
-            ObjectMapper objectMapper,
-            UserService userService,
-            UserFriendsService userFriendsService,
-            WebsocketSessionService sessionService,
-            ApplicationEventPublisher applicationEventPublisher
-    ){
-
-        objectMapper.registerModule(new JavaTimeModule());
-
-        return new WebsocketService(
-                sessionService,
-                messageService, objectMapper, userService,
-                userFriendsService, applicationEventPublisher
-        );
-    }
-
-    @Bean
-    public WebsocketNotificationService websocketNotificationService(
-            WebsocketSessionService websocketSessionService,
-            ObjectMapper objectMapper,
-            UserService userService
-    ){
-        objectMapper.registerModule(new JavaTimeModule());
-        return new WebsocketNotificationService(websocketSessionService, objectMapper, userService);
     }
 
 }

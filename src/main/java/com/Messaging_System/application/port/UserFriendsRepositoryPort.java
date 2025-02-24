@@ -12,10 +12,13 @@ public interface UserFriendsRepositoryPort {
     List<UserModel> getUserFriendsWithType(UserModel user, FriendRequestState state);
 
     void sendFriendRequest(UserFriendsModel request);
-    void acceptFriendRequest(UserModel user, UserModel friend);
+    void acceptFriendRequest(UserModel friend, UserModel user);
     void declineFriendRequest(UserModel user, UserModel friend);
 
     Boolean returnTrueIfAlreadyHasAcceptedOrSentFriendRequest(UserModel user, UserModel friend);
-
     UserFriendsModel findByUserAndFriend(UserModel user, UserModel friend);
+
+    Boolean validateIfFriendRequestIsPending(UserModel user, UserModel friend);
+    Boolean validateIfUserIsFriendOrFriended(UserModel user, UserModel friend);
+    Boolean validateIfUserCanSendFriendRequest(UserModel userModel, UserModel friend);
 }

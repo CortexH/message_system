@@ -21,12 +21,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(i -> i
-                .requestMatchers("/**").permitAll())
+                        .requestMatchers(AllowedEndpoints.userAllowedEndpoints).hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(AllowedEndpoints.onlyForAdmsEndpoints).hasRole("ADMIN")
+                        .requestMatchers(AllowedEndpoints.noAuthorizationAllowedEndpoints).permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(header -> header.frameOptions(frame -> frame.disable()))
                 .addFilterBefore(customSecurityFilterChain, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(handle -> handle.accessDeniedHandler((request, response, accessDeniedException) -> {
-
+                    response.getWriter().write("cannot access this.");
+                    response.getWriter().flush();
                 }))
                 .build();
     }

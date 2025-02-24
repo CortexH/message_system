@@ -33,6 +33,7 @@ public class WebsocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-
+        UserModel user = (UserModel) session.getAttributes().get("User");
+        sessionService.deleteFromSession(user.getUuid().toString());
     }
 }

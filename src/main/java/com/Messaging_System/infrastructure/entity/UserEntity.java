@@ -1,5 +1,6 @@
 package com.Messaging_System.infrastructure.entity;
 
+import com.Messaging_System.domain.enums.UserRoles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +30,8 @@ public class UserEntity {
     private String email;
     private String userImage;
     private String userBio;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRoles role;
 }

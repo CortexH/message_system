@@ -1,5 +1,6 @@
 package com.Messaging_System.application.event.sentEvent;
 
+import com.Messaging_System.application.dto.input.WebsocketFriendRequestDTO;
 import com.Messaging_System.domain.model.UserModel;
 import lombok.*;
 import org.springframework.context.ApplicationEvent;
@@ -10,16 +11,16 @@ import org.springframework.context.ApplicationEvent;
 public class User_ReturnFriendRequest extends ApplicationEvent {
 
     private UserModel sender;
-    private UserModel target;
+    private WebsocketFriendRequestDTO data;
 
     public User_ReturnFriendRequest(
             Object source,
             UserModel sender_,
-            UserModel target_
+            WebsocketFriendRequestDTO dto
     ) {
         super(source);
         this.sender = sender_;
-        this.target = target_;
+        this.data = dto;
     }
 
 

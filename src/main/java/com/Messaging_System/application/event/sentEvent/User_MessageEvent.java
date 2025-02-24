@@ -1,5 +1,6 @@
 package com.Messaging_System.application.event.sentEvent;
 
+import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
 import com.Messaging_System.domain.model.UserModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,21 +8,18 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 @Setter
-public class User_SendMessage extends ApplicationEvent {
+public class User_MessageEvent extends ApplicationEvent {
 
     private UserModel sender;
-    private UserModel target;
-    private String content;
+    private WebsocketMessageDTO message;
 
-    public User_SendMessage(
+    public User_MessageEvent(
             Object source,
             UserModel uSender,
-            UserModel uTarget,
-            String msgContent
+            WebsocketMessageDTO uMessage
     ) {
         super(source);
-        this.target = uTarget;
         this.sender = uSender;
-        this.content = msgContent;
+        this.message = uMessage;
     }
 }

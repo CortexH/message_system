@@ -2,6 +2,7 @@ package com.Messaging_System.adapter.input.websocket;
 
 import com.Messaging_System.application.sharedServices.UserContextService;
 import com.Messaging_System.infrastructure.security.JwtService;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,18 +31,22 @@ public class WebsocketInterceptor implements HandshakeInterceptor {
             WebSocketHandler wsHandler,
             Map<String, Object> attributes
     ) throws Exception {
+        try{
 
-        String token = request.getHeaders().getFirst("authorization");
-        if(!contextService.validateUserToken(request.getHeaders().getFirst("authorization"))){
+            String token = request.getHeaders().getFirst("authorization");
+            if(!contextService.validateUserToken(request.getHeaders().getFirst("authorization"))){
+                response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                return false;
+            }
+
+            attributes.put("User", contextService.findUserByToken(token));
+
+            return true;
+        } catch (Exception e) {
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return false;
         }
 
-        attributes.put("User", contextService.findUserByToken(token));
-
-
-        return true;
-
+        return false;
     }
 
     @Override

@@ -17,9 +17,9 @@ import java.util.UUID;
 public class MessageEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
-    private UUID id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "message_sender")

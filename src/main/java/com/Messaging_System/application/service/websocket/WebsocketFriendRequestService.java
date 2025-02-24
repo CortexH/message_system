@@ -15,20 +15,21 @@ import org.springframework.stereotype.Service;
 public class WebsocketFriendRequestService {
     private final ApplicationEventPublisher eventPublisher;
     private final UserFriendsService friendsService;
-    private final UserService userService;
 
-    public void handleFriendRequest(UserModel sender, WebsocketRequestDTO request){
+    public void handleFriendRequest(UserModel requisitionSender, WebsocketRequestDTO request){
         WebsocketFriendRequestDTO data = request.friendRequest();
-        UserModel target = userService.findUserByFullUsername(data.requestedUserName());
 
         switch (data.type()){
-            case SEND -> friendsService.sendFriendRequest(sender, target);
-            case ACCEPT -> friendsService.acceptFriendRequest(sender, target);
-            case DECLINE -> friendsService.declineFriendRequest(sender, target);
+            case SEND -> {
+                friendsService.sendFriendRequest(requisitionSender, data);
+                eventPublisher.publishEvent(new User_ReturnFriendRequest(
+                        this, requisitionSender, data));
+            }
+            case ACCEPT -> friendsService.acceptFriendRequest(requisitionSender, data);
+            case DECLINE -> friendsService.declineFriendRequest(requisitionSender, data);
+            case REMOVE -> friendsService.removeFriend(requisitionSender, data);
         }
 
-        eventPublisher.publishEvent(new User_ReturnFriendRequest(
-                this, sender, target));
     }
 
 }

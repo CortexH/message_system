@@ -1,4 +1,4 @@
-package com.Messaging_System.infrastructure.config;
+package com.Messaging_System.infrastructure.beans.websocketServices;
 
 import com.Messaging_System.adapter.input.websocket.WebsocketHandler;
 import com.Messaging_System.adapter.input.websocket.WebsocketInterceptor;

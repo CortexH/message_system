@@ -13,14 +13,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class MessageModel {
 
-    private UUID id;
+    private Long id;
 
     private UserModel sender;
     private UserModel receiver;
 
     private String content;
-    private MessageState messageState;
 
+    private MessageState messageState;
     private LocalDateTime timestamp;
 
 }

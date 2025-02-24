@@ -4,6 +4,7 @@ public enum FriendRequestType {
 
     ACCEPT,
     SEND,
-    DECLINE
+    DECLINE,
+    REMOVE
 
 }

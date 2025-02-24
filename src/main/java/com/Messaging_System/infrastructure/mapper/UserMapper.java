@@ -7,6 +7,7 @@ public class UserMapper {
 
     public static UserEntity toEntity(UserModel user){
         return UserEntity.builder()
+                .role(user.getRole())
                 .email(user.getEmail())
                 .name(user.getName())
                 .userBio(user.getUserBio())
@@ -19,6 +20,7 @@ public class UserMapper {
 
     public static UserModel toModel(UserEntity user){
         return UserModel.builder()
+                .role(user.getRole())
                 .email(user.getEmail())
                 .name(user.getName())
                 .userBio(user.getUserBio())

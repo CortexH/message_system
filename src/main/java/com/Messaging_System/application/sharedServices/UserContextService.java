@@ -1,5 +1,6 @@
 package com.Messaging_System.application.sharedServices;
 
+import com.Messaging_System.adapter.exception.CustomUnauthorizedException;
 import com.Messaging_System.application.port.UserRepositoryPort;
 import com.Messaging_System.domain.model.UserModel;
 import com.Messaging_System.infrastructure.security.JwtService;
@@ -21,6 +22,7 @@ public class UserContextService {
     }
 
     public UserModel findUserByToken(String token){
+        if(token == null) throw new CustomUnauthorizedException("Invalid token");
         return repository.findByEmail(jwtService.getJWTSubject(token));
     }
 
