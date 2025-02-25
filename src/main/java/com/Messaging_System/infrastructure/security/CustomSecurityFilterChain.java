@@ -13,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class CustomSecurityFilterChain extends OncePerRequestFilter {
 
     private final String SECRET_KEY = "gzbvUx0wkC8RvshYzbvUx0bvUx0wkC80wkC8RvshYzbvUx0bvUx0";
@@ -47,16 +49,18 @@ public class CustomSecurityFilterChain extends OncePerRequestFilter {
 
             String token = request.getHeader("Authorization");
 
-            if(token == null){
-                throw new CustomUnauthorizedException("Invalid token");
-            }
+            if(token == null) throw new CustomUnauthorizedException("Invalid token");
 
-            UserModel user = contextService.findUserByToken(token);
+            UserModel user = contextService.findUserByToken(token.substring(7));
+
+            if(user == null) throw new CustomUnauthorizedException("Invalid token");
 
             CustomUserDetails uDetails = new CustomUserDetails(user);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), null, uDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            filterChain.doFilter(request, response);
         } catch (CustomUnauthorizedException | JWTDecodeException e) {
             response.setStatus(401);
             response.setContentType("application/json");

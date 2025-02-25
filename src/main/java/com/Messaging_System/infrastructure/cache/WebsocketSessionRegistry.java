@@ -6,7 +6,5 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WebsocketSessionRegistry {
-
     public static final ConcurrentHashMap<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
-
 }

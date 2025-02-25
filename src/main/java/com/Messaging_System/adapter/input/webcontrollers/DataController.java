@@ -1,5 +1,6 @@
 package com.Messaging_System.adapter.input.webcontrollers;
 
+import com.Messaging_System.application.service.DataService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
@@ -10,25 +11,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 
-@RequestMapping("/data")
 @RestController
+@RequestMapping("/data")
 @RequiredArgsConstructor
 public class DataController {
-
+    private final DataService dataService;
+    // used when user open the website
     @GetMapping("/user/get-starter-data")
     public ResponseEntity<?> loadUserStarterData(
             HttpServletRequest request
     ){
-        return ResponseEntity.ok("A");
+        return ResponseEntity.ok(dataService.getOverralStarterUserData(request));
     }
 
+    // used when user open a chat or scroll up
     @GetMapping("/message/get-from-user")
     public ResponseEntity<?> loadMessagesFromSpecifiedUser(
             HttpServletRequest request,
-            @PathParam("id") UUID id,
+            @PathParam("username") String username,
             @PathParam("last") Integer last
-            ) {
+    ) {
         return ResponseEntity.ok("A");
     }
 
 }
+
+

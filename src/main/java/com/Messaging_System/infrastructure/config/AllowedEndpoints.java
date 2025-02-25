@@ -8,7 +8,8 @@ public class AllowedEndpoints {
 
     public static String[] noAuthorizationAllowedEndpoints = {
             "/authentication/register", "/authentication/login",
-            "/authentication/tag-recommendation", "/user-message-ws"
+            "/authentication/tag-recommendation", "/user-message-ws",
+            "/h2-console/**"
     };
 
     public static String[] onlyForAdmsEndpoints = {

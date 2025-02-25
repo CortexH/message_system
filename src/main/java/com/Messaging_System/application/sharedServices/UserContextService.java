@@ -23,6 +23,7 @@ public class UserContextService {
 
     public UserModel findUserByToken(String token){
         if(token == null) throw new CustomUnauthorizedException("Invalid token");
+        //token = token.replace("bearer ", "");
         return repository.findByEmail(jwtService.getJWTSubject(token));
     }
 

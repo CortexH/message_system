@@ -30,7 +30,7 @@ public class WebsocketInterceptor implements HandshakeInterceptor {
             ServerHttpResponse response,
             WebSocketHandler wsHandler,
             Map<String, Object> attributes
-    ) throws Exception {
+    ) {
         try{
 
             String token = request.getHeaders().getFirst("authorization");

@@ -10,6 +10,8 @@ import com.Messaging_System.domain.service.userFriends.UserFriendsValidationServ
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserFriendsService {
@@ -68,5 +70,11 @@ public class UserFriendsService {
 
     public UserFriendsModel getUserFriendByUserAndFriend(UserModel user, UserModel friend){
         return repository.findByUserAndFriend(user, friend);
+    }
+
+    // shared
+
+    public List<UserModel> getUserFriends(UserModel user){
+        return repository.getUserFriends(user);
     }
 }

@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,6 +38,8 @@ public class UserService {
                 .email(data.email())
                 .password(data.password())
                 .tag(data.tag())
+                .userBio("Hey there! Im new here, please be kind :)")
+                .role(UserRoles.USER)
                 .build();
 
         userValidationService.validateUserCreation(user);
@@ -88,6 +92,21 @@ public class UserService {
                 user.getUserImage(),
                 user.getUserBio()
         );
+    }
+
+    public List<FormattedUserDTO> formatUserAsDTO(List<UserModel> users){
+
+        List<FormattedUserDTO> list = new ArrayList<>();
+
+        users.forEach(user -> {
+            list.add(new FormattedUserDTO(
+                    (user.getName() + "#" + user.getTag()),
+                    user.getUuid().toString(),
+                    user.getUserImage(),
+                    user.getUserBio()));
+        });
+
+        return list;
     }
 
 }
