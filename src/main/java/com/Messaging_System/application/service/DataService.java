@@ -1,6 +1,8 @@
 package com.Messaging_System.application.service;
 
 import com.Messaging_System.application.dto.output.userDataDTO.FormattedUserDTO;
+import com.Messaging_System.application.dto.output.userDataDTO.SingleMessageDTO;
+import com.Messaging_System.application.dto.output.userDataDTO.UserChatMessagesDTO;
 import com.Messaging_System.application.dto.output.userDataDTO.UserDataDTO;
 import com.Messaging_System.application.sharedServices.UserContextService;
 import com.Messaging_System.domain.model.UserModel;
@@ -18,8 +20,12 @@ public class DataService {
     private final UserService userService;
     private final UserFriendsService friendsService;
 
-    public UserDataDTO getOverralStarterUserData(HttpServletRequest request){
-        UserModel user = contextService.findUserByServletRequest(request);
+    public UserDataDTO getOverralStarterUserData(HttpServletRequest request, String username){
+
+        UserModel user = (username == null)
+                ? contextService.findUserByServletRequest(request)
+                : userService.findUserByFullUsername(username);
+
         FormattedUserDTO formattedUser = userService.formatUserAsDTO(user);
 
         List<FormattedUserDTO> userFriends = userService.formatUserAsDTO(friendsService.getUserFriends(user));
@@ -27,6 +33,17 @@ public class DataService {
         return new UserDataDTO(
                 formattedUser, userFriends
         );
+
+    }
+
+    public List<SingleMessageDTO> getChatMessages(
+            HttpServletRequest request,
+            String username,
+            int last_index
+    ){
+        UserModel user = contextService.findUserByServletRequest(request);
+
+        return null;
 
     }
 

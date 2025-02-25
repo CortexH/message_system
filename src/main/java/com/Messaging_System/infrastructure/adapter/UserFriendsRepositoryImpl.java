@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -53,7 +52,7 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
 
     @Override
     public Boolean validateIfFriendRequestIsPending(UserModel user, UserModel friend) {
-        return repository.validadeIfExistsByUserAndFriendAndState(user.getUuid(), friend.getUuid(), FriendRequestState.PENDING.name());
+        return repository.validateIfExistsByUserAndFriendAndState(user.getUuid(), friend.getUuid(), FriendRequestState.PENDING.name());
     }
 
     @Override
@@ -79,6 +78,8 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
         return models;
     }
 
+
+
     @Override
     public List<UserModel> getUserFriendsWithType(UserModel user, FriendRequestState state) {
         List<UserFriendsEntity> userFriends = repository.findUserFriendsByUserIdAndRequestState(user.getUuid(), state.name());
@@ -86,6 +87,19 @@ public class UserFriendsRepositoryImpl implements UserFriendsRepositoryPort {
         List<UserModel> models = new ArrayList<>();
         for(UserFriendsEntity uf : userFriends){
             UserEntity u = uf.getFriend();
+
+            models.add(UserMapper.toModel(u));
+        }
+        return models;
+    }
+
+    @Override
+    public List<UserModel> getUserFriendsAndUserFriendedAs(UserModel user) {
+        List<UserFriendsEntity> userFriends = repository.findUserFriendsAndUserFriended(user.getUuid());
+
+        List<UserModel> models = new ArrayList<>();
+        for(UserFriendsEntity uf : userFriends){
+            UserEntity u = (uf.getFriend().getEmail().equals(user.getEmail()) ? uf.getPrincipalUser() : uf.getFriend());
 
             models.add(UserMapper.toModel(u));
         }

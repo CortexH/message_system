@@ -11,6 +11,8 @@ public interface UserFriendsRepositoryPort {
     List<UserModel> getUserFriends(UserModel user);
     List<UserModel> getUserFriendsWithType(UserModel user, FriendRequestState state);
 
+    List<UserModel> getUserFriendsAndUserFriendedAs(UserModel user);
+
     void sendFriendRequest(UserFriendsModel request);
     void acceptFriendRequest(UserModel friend, UserModel user);
     void declineFriendRequest(UserModel user, UserModel friend);

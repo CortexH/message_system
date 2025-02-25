@@ -60,8 +60,6 @@ public class UserFriendsService {
         if(validationService.returnTrueIfTargetIsSameAsUser(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
         if(validationService.validateIfUserIsFriendOf(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
 
-
-
     }
 
     public void notifyFriendRequestToTarget(UserModel sender, WebsocketFriendRequestDTO data){
@@ -75,6 +73,6 @@ public class UserFriendsService {
     // shared
 
     public List<UserModel> getUserFriends(UserModel user){
-        return repository.getUserFriends(user);
+        return repository.getUserFriendsAndUserFriendedAs(user);
     }
 }

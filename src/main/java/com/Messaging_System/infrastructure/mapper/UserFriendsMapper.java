@@ -10,7 +10,7 @@ public class UserFriendsMapper {
                 .user_friends_id(entity.getUser_friends_id())
                 .friend(UserMapper.toModel(entity.getFriend()))
                 .state(entity.getState())
-                .user(UserMapper.toModel(entity.getUserEntity()))
+                .user(UserMapper.toModel(entity.getPrincipalUser()))
                 .build();
     }
 
@@ -19,7 +19,7 @@ public class UserFriendsMapper {
                 .user_friends_id(model.getUser_friends_id())
                 .friend(UserMapper.toEntity(model.getFriend()))
                 .state(model.getState())
-                .userEntity(UserMapper.toEntity(model.getUser()))
+                .principalUser(UserMapper.toEntity(model.getUser()))
                 .build();
     }
 

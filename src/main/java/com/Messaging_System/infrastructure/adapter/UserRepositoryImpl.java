@@ -1,5 +1,6 @@
 package com.Messaging_System.infrastructure.adapter;
 
+import com.Messaging_System.adapter.exception.CustomUnauthorizedException;
 import com.Messaging_System.application.port.UserRepositoryPort;
 import com.Messaging_System.domain.model.UserModel;
 import com.Messaging_System.infrastructure.entity.UserEntity;
@@ -29,6 +30,7 @@ public class UserRepositoryImpl implements UserRepositoryPort {
     @Override
     public UserModel findByEmail(String email) {
         UserEntity user = repository.findByEmail(email);
+        if(user == null) return null;
         return UserMapper.toModel(user);
     }
 

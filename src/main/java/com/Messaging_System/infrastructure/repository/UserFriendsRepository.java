@@ -1,6 +1,5 @@
 package com.Messaging_System.infrastructure.repository;
 
-import com.Messaging_System.domain.enums.FriendRequestState;
 import com.Messaging_System.infrastructure.entity.UserFriendsEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +14,7 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
     @Query(nativeQuery = true,
             value = "SELECT uf.* FROM user_friends uf " +
                     "WHERE uf.principal_user_id = :id " +
-                    "OR uf.friend_user_id = :id " +
+                    //"OR uf.friend_user_id = :id " +
                     "AND uf.friend_request_state = :state"
 
     )
@@ -57,7 +56,7 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
                     "AND uf.friend_user_id = :friendId " +
                     "AND uf.friend_request_state = :state"
     )
-    Boolean validadeIfExistsByUserAndFriendAndState(
+    Boolean validateIfExistsByUserAndFriendAndState(
             @Param("userId") UUID userId,
             @Param("friendId") UUID friendId,
             @Param("state") String state
@@ -98,6 +97,17 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
     void deleteFromUserIdAndFriendId(
             @Param("userId") UUID userId,
             @Param("friendId") UUID friendId
+    );
+
+    @Query(nativeQuery = true,
+            value = "SELECT uf.* FROM user_friends uf " +
+                    "WHERE (uf.principal_user_id = :id " +
+                    "OR uf.friend_user_id = :id) " +
+                    "AND uf.friend_request_state = 'ACCEPTED'"
+
+    )
+    List<UserFriendsEntity> findUserFriendsAndUserFriended(
+            @Param("id") UUID id
     );
 
 }

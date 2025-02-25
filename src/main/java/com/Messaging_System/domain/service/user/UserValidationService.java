@@ -23,9 +23,9 @@ public class UserValidationService {
     }
 
     public UserModel validateUserLogin(String password, String email){
-        UserModel userEntity = repository.findByEmail(email);
-        if(userEntity == null || !userEncryptionService.compareCredentialsToEncrypted(password, userEntity.getPassword())) throw new CustomUnauthorizedException("Wrong password or mail");
-        return userEntity;
+        UserModel user = repository.findByEmail(email);
+        if(user == null || !userEncryptionService.compareCredentialsToEncrypted(password, user.getPassword())) throw new CustomUnauthorizedException("Wrong password or mail");
+        return user;
     }
 
     public void validateUserName(String username){

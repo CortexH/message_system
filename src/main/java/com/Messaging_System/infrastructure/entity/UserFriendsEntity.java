@@ -21,7 +21,7 @@ public class UserFriendsEntity {
 
     @ManyToOne
     @JoinColumn(name = "principal_user_id")
-    private UserEntity userEntity;
+    private UserEntity principalUser;
 
     @ManyToOne
     @JoinColumn(name = "friend_user_id")

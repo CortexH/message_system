@@ -16,12 +16,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DataController {
     private final DataService dataService;
+
     // used when user open the website
     @GetMapping("/user/get-starter-data")
     public ResponseEntity<?> loadUserStarterData(
-            HttpServletRequest request
+            HttpServletRequest request,
+            @PathParam(value = "username") String username
     ){
-        return ResponseEntity.ok(dataService.getOverralStarterUserData(request));
+        return ResponseEntity.ok(dataService.getOverralStarterUserData(request, username));
     }
 
     // used when user open a chat or scroll up
@@ -29,9 +31,9 @@ public class DataController {
     public ResponseEntity<?> loadMessagesFromSpecifiedUser(
             HttpServletRequest request,
             @PathParam("username") String username,
-            @PathParam("last") Integer last
+            @PathParam("last_index") Integer last_index
     ) {
-        return ResponseEntity.ok("A");
+        return ResponseEntity.ok(dataService.getChatMessages(request, username, last_index));
     }
 
 }
