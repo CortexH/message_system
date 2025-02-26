@@ -79,7 +79,7 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
                     "AND uf.friend_user_id = :friendId) " +
                     "OR (uf.principal_user_id = :friendId " +
                     "AND uf.friend_user_id = :userId) " +
-                    "AND uf.friend_request_state != 'DECLINED'"
+                    "AND uf.friend_request_state != 'PENDING'"
     )
     Boolean validateIfUserCanSendFriendRequestToTarget(
             @Param("userId") UUID userId,

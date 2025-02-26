@@ -22,7 +22,4 @@ public class User_ReturnFriendRequest extends ApplicationEvent {
         this.sender = sender_;
         this.data = dto;
     }
-
-
-
 }

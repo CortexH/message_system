@@ -17,7 +17,7 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
                     "OR (m.message_sender = :friendId " +
                     "AND m.message_receiver = :userId)) " +
                     "AND m.message_state != 'DELETED' " +
-                    "ORDER BY m.timeStamp desc " +
+                    "ORDER BY m.time_stamp asc " +
                     "LIMIT 50 " +
                     "OFFSET :lastIndex"
     )

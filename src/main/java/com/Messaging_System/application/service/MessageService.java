@@ -3,18 +3,21 @@ package com.Messaging_System.application.service;
 import com.Messaging_System.adapter.exception.CustomBadRequestException;
 import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
 import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
+import com.Messaging_System.application.dto.output.userDataDTO.SingleMessageDTO;
 import com.Messaging_System.application.event.sentEvent.User_MessageEvent;
 import com.Messaging_System.application.port.MessageRepositoryPort;
 import com.Messaging_System.domain.enums.MessageState;
 import com.Messaging_System.domain.model.MessageModel;
 import com.Messaging_System.domain.model.UserModel;
 import com.Messaging_System.domain.service.userFriends.UserFriendsValidationService;
+import com.Messaging_System.infrastructure.mapper.MessageMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -70,5 +73,10 @@ public class MessageService {
     public void markUserMessagesAsNotRead(UserModel sender, WebsocketMessageDTO message){
 
     }
+
+    public List<MessageModel> getAllUserMessagesInARangePlus50(UserModel user, UserModel friend, Integer index){
+        return repository.getLast50UserMessagesFromUserAndFriend(user, friend, index);
+    }
+
 
 }
