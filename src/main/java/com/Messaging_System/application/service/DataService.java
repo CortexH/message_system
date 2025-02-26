@@ -42,6 +42,9 @@ public class DataService {
             int last_index
     ){
         UserModel user = contextService.findUserByServletRequest(request);
+        UserModel requestedUser = userService.findUserByFullUsername(username);
+
+        
 
         return null;
 

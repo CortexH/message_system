@@ -14,7 +14,6 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
     @Query(nativeQuery = true,
             value = "SELECT uf.* FROM user_friends uf " +
                     "WHERE uf.principal_user_id = :id " +
-                    //"OR uf.friend_user_id = :id " +
                     "AND uf.friend_request_state = :state"
 
     )
