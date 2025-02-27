@@ -2,9 +2,8 @@ package com.Messaging_System.application.service.websocket;
 
 import com.Messaging_System.application.dto.input.WebsocketFriendRequestDTO;
 import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
-import com.Messaging_System.application.event.sentEvent.User_ReturnFriendRequest;
+import com.Messaging_System.application.event.sentEvent.UserReturnFriendRequest;
 import com.Messaging_System.application.service.UserFriendsService;
-import com.Messaging_System.application.service.UserService;
 import com.Messaging_System.domain.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,7 +21,7 @@ public class WebsocketFriendRequestService {
         switch (data.type()){
             case SEND -> {
                 friendsService.sendFriendRequest(requisitionSender, data);
-                eventPublisher.publishEvent(new User_ReturnFriendRequest(
+                eventPublisher.publishEvent(new UserReturnFriendRequest(
                         this, requisitionSender, data));
             }
             case ACCEPT -> friendsService.acceptFriendRequest(requisitionSender, data);

@@ -3,11 +3,14 @@ package com.Messaging_System.application.service.websocket;
 import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
 import com.Messaging_System.application.dto.output.GenericSuccessfullDTO;
 import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestNotify;
+import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestResponseDTO;
 import com.Messaging_System.application.dto.output.websocket.WebsocketMessageNotifyDTO;
 import com.Messaging_System.application.service.UserService;
+import com.Messaging_System.domain.enums.FriendRequestResponseType;
 import com.Messaging_System.domain.enums.WebsocketResponseType;
 import com.Messaging_System.domain.model.UserFriendsModel;
 import com.Messaging_System.domain.model.UserModel;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,15 +63,17 @@ public class WebsocketNotificationService {
 
     }
 
-    public void sendUserMessage(WebsocketMessageDTO message) throws IOException {
+    public void sendUserMessage(WebsocketMessageDTO message, UserModel sender) throws IOException {
         UserModel target = userService.findUserByFullUsername(message.getReceiverName());
-        WebSocketSession session = sessionService.getSessionByUser(target);
 
-        if(session == null){
+        WebSocketSession friendSession = sessionService.getSessionByUser(target);
+        WebSocketSession userSession = sessionService.getSessionByUser(sender);
+
+        if(friendSession == null){
             return;
         }
 
-        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+        friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
                 new WebsocketMessageNotifyDTO(
                         WebsocketResponseType.MESSAGE,
                         message.getContent(),
@@ -76,20 +81,54 @@ public class WebsocketNotificationService {
                 )
         )));
 
+        userSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                new GenericSuccessfullDTO(
+                        LocalDateTime.now().toString(),
+                        200,
+                        "successfully send message to target"
+                )
+        )));
     }
 
-    public void deleteUserMessageNotification(WebsocketMessageDTO message){
+    public void deleteUserMessageNotification(WebsocketMessageDTO message, UserModel sender){
         UserModel target = userService.findUserByFullUsername(message.getReceiverName());
-        WebSocketSession session = sessionService.getSessionByUser(target);
+        WebSocketSession friendSession = sessionService.getSessionByUser(target);
+        WebSocketSession senderSession = sessionService.getSessionByUser(sender);
+
+
+
     }
 
     public void readUserMessageNotification(WebsocketMessageDTO message){
         UserModel target = userService.findUserByFullUsername(message.getReceiverName());
         WebSocketSession session = sessionService.getSessionByUser(target);
     }
+
     public void markAsNotReadUserMessageNotification(WebsocketMessageDTO message){
         UserModel target = userService.findUserByFullUsername(message.getReceiverName());
         WebSocketSession session = sessionService.getSessionByUser(target);
     }
 
+    public void notifyToUserAndFriendThatFriendRequestHasAcceptedOrDenied(UserModel user, UserModel friend, FriendRequestResponseType state) throws IOException {
+        WebSocketSession userSession = sessionService.getSessionByUser(user);
+        WebSocketSession friendSession = sessionService.getSessionByUser(friend);
+
+        friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                new GenericSuccessfullDTO(
+                        LocalDateTime.now().toString(),
+                        200,
+                        "Successfully accepted user request"
+                )
+        )));
+
+        userSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                new WebsocketFriendRequestResponseDTO(
+                        WebsocketResponseType.FRIEND_REQUEST,
+                        state,
+                        user.getName() + "#" + user.getTag(),
+                        null
+                )
+        )));
+
+    }
 }

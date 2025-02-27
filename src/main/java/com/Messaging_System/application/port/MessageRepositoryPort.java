@@ -11,4 +11,6 @@ public interface MessageRepositoryPort {
     void editMessage(MessageModel messageModel, String content);
 
     List<MessageModel> getLast50UserMessagesFromUserAndFriend(UserModel user, UserModel friend, Integer lastIndex);
+
+    void deleteMessageById(UserModel user, Integer message_id);
 }

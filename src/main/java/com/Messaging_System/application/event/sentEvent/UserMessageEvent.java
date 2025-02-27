@@ -8,12 +8,12 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 @Setter
-public class User_MessageEvent extends ApplicationEvent {
+public class UserMessageEvent extends ApplicationEvent {
 
     private UserModel sender;
     private WebsocketMessageDTO message;
 
-    public User_MessageEvent(
+    public UserMessageEvent(
             Object source,
             UserModel uSender,
             WebsocketMessageDTO uMessage

@@ -33,4 +33,10 @@ public class MessageRepositoryImpl implements MessageRepositoryPort {
         List<MessageEntity> allMessages = messageRepository.get50LastsMessagesFromUserAndOtherUser(user.getUuid(), friend.getUuid(), lastIndex);
         return allMessages.stream().map(MessageMapper::toModel).toList();
     }
+
+    @Override
+    public void deleteMessageById(UserModel user, Integer message_id) {
+
+    }
+
 }

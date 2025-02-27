@@ -8,12 +8,12 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 @Setter
-public class User_ReturnFriendRequest extends ApplicationEvent {
+public class UserReturnFriendRequest extends ApplicationEvent {
 
     private UserModel sender;
     private WebsocketFriendRequestDTO data;
 
-    public User_ReturnFriendRequest(
+    public UserReturnFriendRequest(
             Object source,
             UserModel sender_,
             WebsocketFriendRequestDTO dto

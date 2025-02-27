@@ -27,4 +27,9 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
             @Param("lastIndex") Integer lastIndex
     );
 
+
+    void deleteUserMessageById(
+            @Param("id") Integer id
+    );
+
 }
