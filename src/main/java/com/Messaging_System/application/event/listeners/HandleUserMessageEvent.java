@@ -21,7 +21,10 @@ public class HandleUserMessageEvent {
 
         switch (message.getType()){
             case SEND -> notificationService.sendUserMessage(message, event.getSender());
-            case DELETE -> notificationService.deleteUserMessageNotification(message, event.getSender());
+            case DELETE -> notificationService.deleteUserMessageNotification(
+                    message,
+                    event.getSender()
+            );
             case READ -> notificationService.readUserMessageNotification(message);
             case MARK_AS_NOT_READ -> notificationService.markAsNotReadUserMessageNotification(message);
             default -> {}

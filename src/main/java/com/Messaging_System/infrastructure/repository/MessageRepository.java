@@ -1,11 +1,13 @@
 package com.Messaging_System.infrastructure.repository;
 
 import com.Messaging_System.infrastructure.entity.MessageEntity;
+import com.Messaging_System.infrastructure.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
@@ -27,9 +29,5 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
             @Param("lastIndex") Integer lastIndex
     );
 
-
-    void deleteUserMessageById(
-            @Param("id") Integer id
-    );
 
 }

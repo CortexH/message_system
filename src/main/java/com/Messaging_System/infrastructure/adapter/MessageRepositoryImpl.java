@@ -5,15 +5,23 @@ import com.Messaging_System.domain.model.MessageModel;
 import com.Messaging_System.domain.model.UserModel;
 import com.Messaging_System.infrastructure.entity.MessageEntity;
 import com.Messaging_System.infrastructure.mapper.MessageMapper;
+import com.Messaging_System.infrastructure.mapper.UserMapper;
 import com.Messaging_System.infrastructure.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 public class MessageRepositoryImpl implements MessageRepositoryPort {
 
     private final MessageRepository messageRepository;
+
+    @Override
+    public MessageModel findMessageById(Long id) {
+        return MessageMapper.toModel(messageRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Message with specified id not found.")));
+    }
 
     @Override
     public MessageModel createMessage(MessageModel model) {
@@ -35,8 +43,20 @@ public class MessageRepositoryImpl implements MessageRepositoryPort {
     }
 
     @Override
-    public void deleteMessageById(UserModel user, Integer message_id) {
+    public void deleteMessageById(UserModel user, Long message_id) {
+        messageRepository.deleteById(message_id);
+    }
 
+    @Override
+    public UserModel getMessageSenderByMessageId(Long id) {
+        return UserMapper.toModel(messageRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Message with specified id not found.")).getSender());
+    }
+
+    @Override
+    public UserModel getMessageReceiverByMessageId(Long id) {
+        return UserMapper.toModel(messageRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Message with specified id not found.")).getReceiver());
     }
 
 }

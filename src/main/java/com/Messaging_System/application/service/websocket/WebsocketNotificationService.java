@@ -5,8 +5,10 @@ import com.Messaging_System.application.dto.output.GenericSuccessfullDTO;
 import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestNotify;
 import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestResponseDTO;
 import com.Messaging_System.application.dto.output.websocket.WebsocketMessageNotifyDTO;
+import com.Messaging_System.application.service.MessageService;
 import com.Messaging_System.application.service.UserService;
 import com.Messaging_System.domain.enums.FriendRequestResponseType;
+import com.Messaging_System.domain.enums.WebsocketMessageResponseType;
 import com.Messaging_System.domain.enums.WebsocketResponseType;
 import com.Messaging_System.domain.model.UserFriendsModel;
 import com.Messaging_System.domain.model.UserModel;
@@ -27,6 +29,7 @@ public class WebsocketNotificationService {
     private final WebsocketSessionService sessionService;
     private final ObjectMapper objectMapper;
     private final UserService userService;
+    private final MessageService messageService;
 
     public void userFeedbackFromFriendRequest(UserFriendsModel userFriendsModel) throws IOException {
         UserModel user = userFriendsModel.getUser();
@@ -74,12 +77,14 @@ public class WebsocketNotificationService {
         }
 
         friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
-                new WebsocketMessageNotifyDTO(
-                        WebsocketResponseType.MESSAGE,
-                        message.getContent(),
-                        target.getName() + "#" + target.getTag()
+                WebsocketMessageNotifyDTO.builder()
+                        .type(WebsocketResponseType.MESSAGE)
+                        .messageResponseType(WebsocketMessageResponseType.SEND)
+                        .content(message.getContent())
+                        .userName(target.getName() + "#" + target.getTag())
+                        .build()
                 )
-        )));
+        ));
 
         userSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
                 new GenericSuccessfullDTO(
@@ -90,12 +95,32 @@ public class WebsocketNotificationService {
         )));
     }
 
-    public void deleteUserMessageNotification(WebsocketMessageDTO message, UserModel sender){
-        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+    public void deleteUserMessageNotification(WebsocketMessageDTO message, UserModel sender) throws IOException {
+        UserModel target = userService.findUserById(messageService.getReceiverByMessageId(message.getMessage_id()).getUuid());
         WebSocketSession friendSession = sessionService.getSessionByUser(target);
         WebSocketSession senderSession = sessionService.getSessionByUser(sender);
 
+        if(friendSession != null){
+            friendSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                    WebsocketMessageNotifyDTO.builder()
+                            .type(WebsocketResponseType.MESSAGE)
+                            .messageResponseType(WebsocketMessageResponseType.DELETE)
+                            .userName(target.getName() + "#" + target.getTag())
+                            .message_id(message.getMessage_id())
+                            .build()
+            )));
+        }
 
+        if(senderSession != null){
+            senderSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(
+                    new GenericSuccessfullDTO(
+                            LocalDateTime.now().toString(),
+                            200,
+                            "successfully deleted message!"
+                    )
+            )
+            ));
+        }
 
     }
 

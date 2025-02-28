@@ -3,11 +3,13 @@ package com.Messaging_System.application.service;
 import com.Messaging_System.adapter.exception.CustomBadRequestException;
 import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
 import com.Messaging_System.application.dto.input.WebsocketRequestDTO;
+import com.Messaging_System.application.dto.internal.MessageWebsocketToServiceDTO;
 import com.Messaging_System.application.event.sentEvent.UserMessageEvent;
 import com.Messaging_System.application.port.MessageRepositoryPort;
 import com.Messaging_System.domain.enums.MessageState;
 import com.Messaging_System.domain.model.MessageModel;
 import com.Messaging_System.domain.model.UserModel;
+import com.Messaging_System.domain.service.message.MessageValidationService;
 import com.Messaging_System.domain.service.userFriends.UserFriendsValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MessageService {
 
+    private final MessageValidationService validationService;
     private final MessageRepositoryPort repository;
     private final UserService userService;
     private final UserFriendsValidationService friendsValidationService;
@@ -32,6 +35,14 @@ public class MessageService {
     ){
         WebsocketMessageDTO message = receivedMessage.message();
 
+        // pfv faça a reestruturação do evento :(
+
+        MessageWebsocketToServiceDTO socketToService = new MessageWebsocketToServiceDTO(
+                message.getContent(),
+                message.getType(),
+                userService.findUserByFullUsername(message.getReceiverName())
+        )
+
         switch (message.getType()){
             case SEND -> sendUserMessage(user, message);
             case DELETE -> deleteUserMessage(user, message);
@@ -40,7 +51,11 @@ public class MessageService {
             default -> {}
         }
 
-        eventPublisher.publishEvent(new UserMessageEvent(this, user, message));
+        eventPublisher.publishEvent(new UserMessageEvent(
+                this,
+                user,
+                message
+        ));
     }
 
     public void sendUserMessage(UserModel sender, WebsocketMessageDTO message){
@@ -60,9 +75,10 @@ public class MessageService {
         repository.createMessage(messageModel);
     }
 
-    public void deleteUserMessage(UserModel sender, WebsocketMessageDTO message){
-
-        repository.deleteMessageById(sender, message.getMessage_id().intValue());
+    public void deleteUserMessage(UserModel sender, WebsocketMessageDTO websocketMessageDTO){
+        MessageModel message = repository.findMessageById(websocketMessageDTO.getMessage_id());
+        if(!validationService.returnTrueIfMessageIsOfSpecifiedUser(sender, message)) throw new CustomBadRequestException("You cannot delete that message");
+        repository.deleteMessageById(sender, message.getId());
     }
 
     public void readUserMessages(UserModel sender, WebsocketMessageDTO message){
@@ -75,6 +91,14 @@ public class MessageService {
 
     public List<MessageModel> getAllUserMessagesInARangePlus50(UserModel user, UserModel friend, Integer index){
         return repository.getLast50UserMessagesFromUserAndFriend(user, friend, index);
+    }
+
+    public UserModel getSenderByMessageId(Long id){
+        return repository.getMessageSenderByMessageId(id);
+    }
+
+    public UserModel getReceiverByMessageId(Long id){
+        return repository.getMessageReceiverByMessageId(id);
     }
 
 

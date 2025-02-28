@@ -36,10 +36,11 @@ public class WebsocketServicesBeans {
     public WebsocketNotificationService websocketNotificationService(
             WebsocketSessionService websocketSessionService,
             ObjectMapper objectMapper,
-            UserService userService
+            UserService userService,
+            MessageService messageService
     ){
         objectMapper.registerModule(new JavaTimeModule());
-        return new WebsocketNotificationService(websocketSessionService, objectMapper, userService);
+        return new WebsocketNotificationService(websocketSessionService, objectMapper, userService, messageService);
     }
 
 }
