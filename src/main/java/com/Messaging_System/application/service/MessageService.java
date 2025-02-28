@@ -33,19 +33,14 @@ public class MessageService {
             UserModel user, WebSocketSession session,
             WebsocketRequestDTO receivedMessage
     ){
+
+        MessageModel userMessage = null;
+
         WebsocketMessageDTO message = receivedMessage.message();
 
-        // pfv faça a reestruturação do evento :(
-
-        MessageWebsocketToServiceDTO socketToService = new MessageWebsocketToServiceDTO(
-                message.getContent(),
-                message.getType(),
-                userService.findUserByFullUsername(message.getReceiverName())
-        )
-
         switch (message.getType()){
-            case SEND -> sendUserMessage(user, message);
-            case DELETE -> deleteUserMessage(user, message);
+            case SEND -> userMessage = sendUserMessage(user, message);
+            case DELETE -> userMessage = deleteUserMessage(user, message);
             case READ -> readUserMessages(user, message);
             case MARK_AS_NOT_READ -> markUserMessagesAsNotRead(user, message);
             default -> {}
@@ -54,11 +49,12 @@ public class MessageService {
         eventPublisher.publishEvent(new UserMessageEvent(
                 this,
                 user,
-                message
+                userMessage,
+                message.getType()
         ));
     }
 
-    public void sendUserMessage(UserModel sender, WebsocketMessageDTO message){
+    public MessageModel sendUserMessage(UserModel sender, WebsocketMessageDTO message){
 
         UserModel target = userService.findUserByFullUsername(message.getReceiverName());
         if(friendsValidationService.returnTrueIfTargetIsSameAsUser(sender, target)) throw new CustomBadRequestException("You cannot message yourself yet");
@@ -72,13 +68,14 @@ public class MessageService {
                 .sender(sender)
                 .build();
 
-        repository.createMessage(messageModel);
+        return repository.createMessage(messageModel);
     }
 
-    public void deleteUserMessage(UserModel sender, WebsocketMessageDTO websocketMessageDTO){
+    public MessageModel deleteUserMessage(UserModel sender, WebsocketMessageDTO websocketMessageDTO){
         MessageModel message = repository.findMessageById(websocketMessageDTO.getMessage_id());
         if(!validationService.returnTrueIfMessageIsOfSpecifiedUser(sender, message)) throw new CustomBadRequestException("You cannot delete that message");
         repository.deleteMessageById(sender, message.getId());
+        return message;
     }
 
     public void readUserMessages(UserModel sender, WebsocketMessageDTO message){

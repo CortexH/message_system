@@ -1,6 +1,7 @@
 package com.Messaging_System.application.service.websocket;
 
 import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
+import com.Messaging_System.application.dto.internal.MessageWebsocketToServiceDTO;
 import com.Messaging_System.application.dto.output.GenericSuccessfullDTO;
 import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestNotify;
 import com.Messaging_System.application.dto.output.websocket.WebsocketFriendRequestResponseDTO;
@@ -10,6 +11,7 @@ import com.Messaging_System.application.service.UserService;
 import com.Messaging_System.domain.enums.FriendRequestResponseType;
 import com.Messaging_System.domain.enums.WebsocketMessageResponseType;
 import com.Messaging_System.domain.enums.WebsocketResponseType;
+import com.Messaging_System.domain.model.MessageModel;
 import com.Messaging_System.domain.model.UserFriendsModel;
 import com.Messaging_System.domain.model.UserModel;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -66,8 +68,8 @@ public class WebsocketNotificationService {
 
     }
 
-    public void sendUserMessage(WebsocketMessageDTO message, UserModel sender) throws IOException {
-        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+    public void sendUserMessage(MessageModel message, UserModel sender) throws IOException {
+        UserModel target = message.getReceiver();
 
         WebSocketSession friendSession = sessionService.getSessionByUser(target);
         WebSocketSession userSession = sessionService.getSessionByUser(sender);
@@ -95,8 +97,8 @@ public class WebsocketNotificationService {
         )));
     }
 
-    public void deleteUserMessageNotification(WebsocketMessageDTO message, UserModel sender) throws IOException {
-        UserModel target = userService.findUserById(messageService.getReceiverByMessageId(message.getMessage_id()).getUuid());
+    public void deleteUserMessageNotification(MessageModel message, UserModel sender) throws IOException {
+        UserModel target = message.getReceiver();
         WebSocketSession friendSession = sessionService.getSessionByUser(target);
         WebSocketSession senderSession = sessionService.getSessionByUser(sender);
 
@@ -106,7 +108,7 @@ public class WebsocketNotificationService {
                             .type(WebsocketResponseType.MESSAGE)
                             .messageResponseType(WebsocketMessageResponseType.DELETE)
                             .userName(target.getName() + "#" + target.getTag())
-                            .message_id(message.getMessage_id())
+                            .message_id(message.getId())
                             .build()
             )));
         }
@@ -124,13 +126,13 @@ public class WebsocketNotificationService {
 
     }
 
-    public void readUserMessageNotification(WebsocketMessageDTO message){
-        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+    public void readUserMessageNotification(MessageModel message){
+        UserModel target = message.getReceiver();
         WebSocketSession session = sessionService.getSessionByUser(target);
     }
 
-    public void markAsNotReadUserMessageNotification(WebsocketMessageDTO message){
-        UserModel target = userService.findUserByFullUsername(message.getReceiverName());
+    public void markAsNotReadUserMessageNotification(MessageModel message){
+        UserModel target = message.getReceiver();
         WebSocketSession session = sessionService.getSessionByUser(target);
     }
 
