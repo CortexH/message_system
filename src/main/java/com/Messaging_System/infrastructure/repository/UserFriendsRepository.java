@@ -63,10 +63,11 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
 
     @Query(nativeQuery = true,
             value = "SELECT COUNT(*) > 0 FROM user_friends uf " +
-                    "WHERE (uf.principal_user_id = :userId " +
+                    "WHERE ((uf.principal_user_id = :userId " +
                     "AND uf.friend_user_id = :friendId) " +
                     "OR (uf.principal_user_id = :friendId " +
-                    "AND uf.friend_user_id = :userId) "
+                    "AND uf.friend_user_id = :userId)) " +
+                    "AND uf.friend_request_state = 'ACCEPTED' "
     )
     Boolean validateIfAnyOfTheSidesAreBefriended(
             @Param("userId") UUID userId,
@@ -79,7 +80,7 @@ public interface UserFriendsRepository extends JpaRepository<UserFriendsEntity, 
                     "AND uf.friend_user_id = :friendId) " +
                     "OR (uf.principal_user_id = :friendId " +
                     "AND uf.friend_user_id = :userId) " +
-                    "AND uf.friend_request_state != 'PENDING'"
+                    "AND uf.friend_request_state != 'PENDING' "
     )
     Boolean validateIfUserCanSendFriendRequestToTarget(
             @Param("userId") UUID userId,

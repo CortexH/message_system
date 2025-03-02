@@ -23,5 +23,4 @@ public interface UserFriendsRepositoryPort {
     Boolean validateIfFriendRequestIsPending(UserModel user, UserModel friend);
     Boolean validateIfUserIsFriendOrFriended(UserModel user, UserModel friend);
     Boolean validateIfUserCanSendFriendRequest(UserModel userModel, UserModel friend);
-
 }

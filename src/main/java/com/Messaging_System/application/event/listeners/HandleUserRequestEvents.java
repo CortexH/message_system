@@ -25,15 +25,12 @@ public class HandleUserRequestEvents {
     public void handleUserFriendRequest(UserReturnFriendRequest event) throws IOException {
         UserModel user = userService.findUserByFullUsername(event.getData().requestedUserName());
         UserFriendsModel friendsModel = friendsService.getUserFriendByUserAndFriend(event.getSender(), user);
-        websocketService.notifyTargetRequest(friendsModel);
-        websocketService.userFeedbackFromFriendRequest(friendsModel);
+        websocketService.friendRequestNotification(friendsModel);
     }
-
 
     @EventListener
     public void handleUserAcceptFriendRequest(UserFriendRequestResponse event) throws IOException {
         websocketService.notifyToUserAndFriendThatFriendRequestHasAcceptedOrDenied(event.getRequestSender(), event.getRequestReceiver(), event.getRequestState());
     }
-
 
 }

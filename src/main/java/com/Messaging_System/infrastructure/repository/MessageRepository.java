@@ -2,7 +2,9 @@ package com.Messaging_System.infrastructure.repository;
 
 import com.Messaging_System.infrastructure.entity.MessageEntity;
 import com.Messaging_System.infrastructure.entity.UserEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,5 +31,15 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
             @Param("lastIndex") Integer lastIndex
     );
 
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true,
+            value = "UPDATE messages m " +
+                    "SET m.message_state = 'READ' " +
+                    "WHERE m.message_id IN (:ids)"
+    )
+    void readMessagesByIdList(
+            @Param("ids") List<Long> ids
+    );
 
 }

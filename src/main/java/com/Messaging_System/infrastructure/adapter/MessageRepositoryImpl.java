@@ -37,6 +37,12 @@ public class MessageRepositoryImpl implements MessageRepositoryPort {
     }
 
     @Override
+    public List<MessageModel> findAllMessagesInIdList(List<Long> ids) {
+        return messageRepository.findAllById(ids)
+                .stream().map(MessageMapper::toModel).toList();
+    }
+
+    @Override
     public List<MessageModel> getLast50UserMessagesFromUserAndFriend(UserModel user, UserModel friend, Integer lastIndex) {
         List<MessageEntity> allMessages = messageRepository.get50LastsMessagesFromUserAndOtherUser(user.getUuid(), friend.getUuid(), lastIndex);
         return allMessages.stream().map(MessageMapper::toModel).toList();
@@ -57,6 +63,11 @@ public class MessageRepositoryImpl implements MessageRepositoryPort {
     public UserModel getMessageReceiverByMessageId(Long id) {
         return UserMapper.toModel(messageRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Message with specified id not found.")).getReceiver());
+    }
+
+    @Override
+    public void readMessagesById(List<Long> ids) {
+        messageRepository.readMessagesByIdList(ids);
     }
 
 }

@@ -44,6 +44,7 @@ public class UserFriendsService {
         if(validationService.returnTrueIfTargetIsSameAsUser(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
         if(validationService.validateIfUserIsFriendOf(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
         if(!validationService.validateIfAlreadyExistsFriendRequest(sender, friend)) throw new CustomBadRequestException("You does not have a friend request of specified user");
+
         repository.acceptFriendRequest(friend, sender);
 
         eventPublisher.publishEvent(new UserFriendRequestResponse(this, sender, friend, FriendRequestResponseType.ACCEPTED));
@@ -64,10 +65,6 @@ public class UserFriendsService {
         if(!repository.validateIfUserIsFriendOrFriended(sender, friend)) throw new CustomBadRequestException("You are not friend of this user");
         if(validationService.returnTrueIfTargetIsSameAsUser(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
         if(validationService.validateIfUserIsFriendOf(sender, friend)) throw new CustomBadRequestException("You have no friend request of specified user");
-
-    }
-
-    public void notifyFriendRequestToTarget(UserModel sender, WebsocketFriendRequestDTO data){
 
     }
 

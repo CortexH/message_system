@@ -29,6 +29,9 @@ public class WebsocketMessageDTO {
     @JsonProperty("message_id")
     private Long message_id;
 
+    @JsonProperty("chatting")
+    private String chatting_user;
+
     @JsonProperty("all_ids")
     private List<Long> message_ids;
 }

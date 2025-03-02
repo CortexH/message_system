@@ -7,6 +7,8 @@ import com.Messaging_System.domain.enums.WebsocketResponseType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,5 +30,8 @@ public class WebsocketMessageNotifyDTO {
 
         @JsonProperty("message_id")
         Long message_id;
+
+        @JsonProperty("messages_ids")
+        List<Long> messages_ids;
 
 }

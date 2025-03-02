@@ -1,7 +1,5 @@
 package com.Messaging_System.application.event.listeners;
 
-import com.Messaging_System.application.dto.input.WebsocketMessageDTO;
-import com.Messaging_System.application.dto.internal.MessageWebsocketToServiceDTO;
 import com.Messaging_System.application.event.sentEvent.UserMessageEvent;
 import com.Messaging_System.application.service.websocket.WebsocketNotificationService;
 import com.Messaging_System.domain.enums.WebsocketMessageResponseType;
@@ -29,7 +27,9 @@ public class HandleUserMessageEvent {
                     message,
                     event.getSender()
             );
-            case READ -> notificationService.readUserMessageNotification(message);
+            case READ -> notificationService.readUserMessageNotification(
+                    event.getMessageList()
+            );
             case MARK_AS_NOT_READ -> notificationService.markAsNotReadUserMessageNotification(message);
             default -> {}
         }

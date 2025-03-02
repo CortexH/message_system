@@ -37,7 +37,7 @@ public class WebsocketService {
             UserModel user = (UserModel) session.getAttributes().get("User");
 
             switch (receivedMessage.type()){
-                case MESSAGE -> messageService.handleUserMessage(user, session, receivedMessage);
+                case MESSAGE -> messageService.handleUserMessage(user, receivedMessage);
                 case FRIEND_REQUEST -> friendRequestService.handleFriendRequest(user, receivedMessage);
             }
 
@@ -46,9 +46,9 @@ public class WebsocketService {
 
         } catch (CustomBadRequestException e){
             websocketExceptionService.handleBadRequestException(e, session);
-        } catch (Exception e){
-            websocketExceptionService.handleOtherExceptions(session);
-        }
+        } //catch (Exception e){
+            //websocketExceptionService.handleOtherExceptions(session);
+        //}
     }
 
 }

@@ -41,4 +41,8 @@ public class UserFriendsValidationService {
         return repository.validateIfUserCanSendFriendRequest(messageSender, messageReceiver);
     }
 
+    public Boolean validateIfUserIsFriendOfTarget(UserModel sender, UserModel target){
+        return repository.validateIfUserIsFriendOrFriended(sender, target);
+    }
+
 }

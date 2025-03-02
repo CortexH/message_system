@@ -10,9 +10,12 @@ public interface MessageRepositoryPort {
     MessageModel createMessage(MessageModel messageModel);
     void editMessage(MessageModel messageModel, String content);
 
+    List<MessageModel> findAllMessagesInIdList(List<Long> ids);
+
     List<MessageModel> getLast50UserMessagesFromUserAndFriend(UserModel user, UserModel friend, Integer lastIndex);
 
     void deleteMessageById(UserModel user, Long message_id);
     UserModel getMessageSenderByMessageId(Long id);
     UserModel getMessageReceiverByMessageId(Long id);
+    void readMessagesById(List<Long> ids);
 }

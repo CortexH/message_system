@@ -42,7 +42,11 @@ public class CustomSecurityFilterChain extends OncePerRequestFilter {
                 return;
             }
 
-            if(checkAllowedEndpoint(request.getRequestURI()) || request.getRequestURI().contains("/h2")){
+            if(checkAllowedEndpoint(request.getRequestURI())
+                    || request.getRequestURI().contains("/h2")
+                    || request.getRequestURI().contains("/swagger")
+                    || request.getRequestURI().contains("/api-docs")
+            ){
                 filterChain.doFilter(request,response);
                 return;
             }
