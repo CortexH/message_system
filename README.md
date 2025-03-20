@@ -16,8 +16,6 @@ O projeto segue a **Arquitetura hexagonal**, separando as camadas em domínio, i
    - Banco de dados H2
    - Framework springboot
 
-You can find all endpoints at [swagger](https://noruga-messaging-system-backend.onrender.com/swagger-ui/index.html)
-
-obs: You may insert the token in 'authorization' header.
+Você pode encontrar todos os endpoints no swagger: [swagger](https://noruga-messaging-system-backend.onrender.com/swagger-ui/index.html)
 
 
